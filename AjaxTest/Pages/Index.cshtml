@@ -1,0 +1,36 @@
+﻿@page
+@model AjaxTest.Pages.IndexModel
+
+
+@Html.AntiForgeryToken()
+
+<form>
+    <input id="InputName" type="text" />
+    <input id="GetData" type="button" value="Get Data" />
+</form>
+
+
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(function () {
+        $("#GetData").click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/Index?handler=GetTime",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: { "name": $("#InputName").val() },
+                success: function (response) {
+                    alert("Hello: " + response.name + ".\n Current Date and Time: " + response.dateTime);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+    });
+</script>
